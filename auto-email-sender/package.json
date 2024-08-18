@@ -1,0 +1,25 @@
+{
+  "name": "auto-email-sender",
+  "version": "1.0.2",
+  "description": "A simple package to send emails with SMTP using an HTML template and data from an Excel sheet",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "email",
+    "smtp",
+    "nodemailer",
+    "excel",
+    "html template",
+    "auto email"
+  ],
+  "author": "Aniket Subudhi",
+  "license": "Aniket",
+  "dependencies": {
+    "auto-email-sender": "^1.0.1",
+    "fs-extra": "^11.2.0",
+    "nodemailer": "^6.9.14",
+    "xlsx": "^0.18.5"
+  }
+}
