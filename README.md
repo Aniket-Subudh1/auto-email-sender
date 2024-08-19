@@ -15,7 +15,7 @@
 Install the package via npm:
 
 ```bash
-npm install auto-email-sender
+npm i auto-email-sender
 ```
 
 ## Usage
