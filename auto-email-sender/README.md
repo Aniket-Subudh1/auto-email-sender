@@ -1,5 +1,3 @@
-Here's a detailed `README.md` file for your "auto-email-sender" npm package:
-
 ```markdown
 # Auto Email Sender
 
@@ -35,8 +33,8 @@ Example Excel structure:
 
 | Email               | Name      | Data1 | Data2 |
 |---------------------|-----------|-------|-------|
-| user1@example.com    | John Doe  | Info1 | Info2 |
-| user2@example.com    | Jane Smith| Info3 | Info4 |
+| user1@example.com    | Aniket Subudhi  | Info1 | Info2 |
+| user2@example.com    | Swagat| Info3 | Info4 |
 
 ### Step 2: Create an HTML Template
 
@@ -102,8 +100,12 @@ const smtpConfig = {
     },
 };
 
-// Initialize the AutoEmailSender with the Excel file and SMTP config
-const emailSender = new AutoEmailSender('path/to/your/excel/file.xlsx', smtpConfig);
+// Specify the column indices (0-based indexing)
+const emailColumnIndex = 0; // Column containing email addresses
+const nameColumnIndex = 1;  // Column containing names
+
+// Initialize the AutoEmailSender with the Excel file, SMTP config, and column indices
+const emailSender = new AutoEmailSender('path/to/your/excel/file.xlsx', smtpConfig, emailColumnIndex, nameColumnIndex);
 
 // Set the subject and path to the HTML template
 const subject = 'Your Email Subject';
@@ -123,10 +125,12 @@ node your_script.js
 
 ### API Documentation
 
-#### `AutoEmailSender(filePath, smtpConfig)`
+#### `AutoEmailSender(filePath, smtpConfig, emailColumnIndex, nameColumnIndex)`
 
 - **filePath**: Path to the Excel file containing recipient data.
 - **smtpConfig**: SMTP configuration object for `nodemailer`. Must include host, port, secure, and auth properties.
+- **emailColumnIndex**: 0-based index of the column containing email addresses.
+- **nameColumnIndex**: 0-based index of the column containing recipient names.
 
 #### `sendEmailForRow(rowIndex, subject, templatePath)`
 
@@ -150,7 +154,7 @@ const smtpConfig = {
 
 ## License
 
-This project is licensed under the Aniket Subudhi.
+This project is licensed under the ICT License.
 
 ## Author
 
@@ -158,7 +162,7 @@ Aniket Subudhi
 
 ## Contributions
 
-Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/yourusername/auto-email-sender/issues) if you want to contribute.
+Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/Aniket-Subudh1/auto-email-sender.git) if you want to contribute.
 
 ## Acknowledgments
 
@@ -166,5 +170,3 @@ Contributions, issues, and feature requests are welcome! Feel free to check the 
 - [xlsx](https://github.com/SheetJS/sheetjs) - The library used to parse Excel files.
 - [fs-extra](https://github.com/jprichardson/node-fs-extra) - The library used for file system operations.
 ```
-
-

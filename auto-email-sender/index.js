@@ -3,10 +3,11 @@ const XLSX = require('xlsx');
 const fs = require('fs-extra');
 
 class AutoEmailSender {
-    constructor(filePath, smtpConfig, emailColumnIndex) {
+    constructor(filePath, smtpConfig, emailColumnIndex, nameColumnIndex) {
         this.filePath = filePath;
         this.smtpConfig = smtpConfig;
-        this.emailColumnIndex = emailColumnIndex;  // New parameter for email column index
+        this.emailColumnIndex = emailColumnIndex;  // Index of the column containing the email addresses
+        this.nameColumnIndex = nameColumnIndex;    // Index of the column containing the names
         this.transporter = nodemailer.createTransport(smtpConfig);
         this.workbook = XLSX.readFile(filePath);
         this.sheetName = this.workbook.SheetNames[0];
@@ -20,10 +21,10 @@ class AutoEmailSender {
         }
         const row = this.data[rowIndex];
 
-        // Use the specified column index to extract the email
+        // Use the specified column index to extract the email and name
         return {
-            email: row[this.emailColumnIndex],  // Use the provided index for email column
-            name: null,     // No names available in this structure (can be customized)
+            email: row[this.emailColumnIndex],  // Extract email using the provided index
+            name: row[this.nameColumnIndex],    // Extract name using the provided index
             otherData: []   // No additional data in this structure
         };
     }
@@ -61,7 +62,7 @@ class AutoEmailSender {
         try {
             const recipient = this.getRow(rowIndex);
             const replacements = {
-                name: recipient.name || 'User', // Use 'User' as a fallback
+                name: recipient.name || 'User',  // Use the name from the specified column, fallback to 'User'
                 ...recipient.otherData.reduce((acc, value, index) => {
                     acc[`other${index + 1}`] = value;
                     return acc;

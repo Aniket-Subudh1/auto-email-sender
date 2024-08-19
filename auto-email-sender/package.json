@@ -1,6 +1,6 @@
 {
   "name": "auto-email-sender",
-  "version": "1.0.2",
+  "version": "1.0.5",
   "description": "A simple package to send emails with SMTP using an HTML template and data from an Excel sheet",
   "main": "index.js",
   "scripts": {
