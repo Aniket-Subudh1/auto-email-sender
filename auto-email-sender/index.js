@@ -3,30 +3,38 @@ const XLSX = require('xlsx');
 const fs = require('fs-extra');
 
 class AutoEmailSender {
-    constructor(filePath, smtpConfig, emailColumnIndex, nameColumnIndex) {
+    constructor(filePath, smtpConfig, emailColumnName, nameColumnName) {
         this.filePath = filePath;
         this.smtpConfig = smtpConfig;
-        this.emailColumnIndex = emailColumnIndex;  // Index of the column containing the email addresses
-        this.nameColumnIndex = nameColumnIndex;    // Index of the column containing the names
+        this.emailColumnName = emailColumnName;  // Name of the column containing the email addresses
+        this.nameColumnName = nameColumnName;    // Name of the column containing the names
         this.transporter = nodemailer.createTransport(smtpConfig);
         this.workbook = XLSX.readFile(filePath);
         this.sheetName = this.workbook.SheetNames[0];
         this.worksheet = this.workbook.Sheets[this.sheetName];
-        this.data = XLSX.utils.sheet_to_json(this.worksheet, { header: 1 });
+        this.data = XLSX.utils.sheet_to_json(this.worksheet);  // Convert sheet to JSON with headers
     }
 
-    getRow(rowIndex) {
-        if (rowIndex < 0 || rowIndex >= this.data.length) {
-            throw new Error('Row index out of range.');
-        }
-        const row = this.data[rowIndex];
+    getColumnData(columnName) {
+        return this.data.map(row => row[columnName]);
+    }
 
-        // Use the specified column index to extract the email and name
-        return {
-            email: row[this.emailColumnIndex],  // Extract email using the provided index
-            name: row[this.nameColumnIndex],    // Extract name using the provided index
-            otherData: []   // No additional data in this structure
-        };
+    async sendEmailsForColumn(subject, templatePath) {
+        const emailColumnData = this.getColumnData(this.emailColumnName);
+        const nameColumnData = this.getColumnData(this.nameColumnName);
+
+        for (let i = 0; i < emailColumnData.length; i++) {
+            const email = emailColumnData[i];
+            const name = nameColumnData[i] || 'User';  // Fallback to 'User' if name is missing
+            const replacements = { name };
+            const htmlContent = this.createEmailContent(templatePath, replacements);
+
+            try {
+                await this.sendEmail(email, subject, htmlContent);
+            } catch (error) {
+                console.error(`Failed to send email to ${email}. Error: ${error.message}`);
+            }
+        }
     }
 
     async sendEmail(to, subject, htmlContent) {
@@ -55,23 +63,6 @@ class AutoEmailSender {
             return template;
         } catch (error) {
             throw new Error(`Error reading template file: ${error.message}`);
-        }
-    }
-
-    async sendEmailForRow(rowIndex, subject, templatePath) {
-        try {
-            const recipient = this.getRow(rowIndex);
-            const replacements = {
-                name: recipient.name || 'User',  // Use the name from the specified column, fallback to 'User'
-                ...recipient.otherData.reduce((acc, value, index) => {
-                    acc[`other${index + 1}`] = value;
-                    return acc;
-                }, {})
-            };
-            const htmlContent = this.createEmailContent(templatePath, replacements);
-            await this.sendEmail(recipient.email, subject, htmlContent);
-        } catch (error) {
-            console.error(error.message);
         }
     }
 }

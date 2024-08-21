@@ -1,4 +1,4 @@
-```markdown
+
 # Auto Email Sender
 
 **Auto Email Sender** is a simple Node.js package that allows you to send emails using an SMTP server. It supports sending emails with customizable HTML content and data extracted from an Excel sheet. This package is ideal for bulk email sending where email content is dynamic and personalized for each recipient.
@@ -34,7 +34,7 @@ Example Excel structure:
 | Email               | Name      | Data1 | Data2 |
 |---------------------|-----------|-------|-------|
 | user1@example.com    | Aniket Subudhi  | Info1 | Info2 |
-| user2@example.com    | Swagat| Info3 | Info4 |
+| user2@example.com    | Swagat | Info3 | Info4 |
 
 ### Step 2: Create an HTML Template
 
@@ -100,19 +100,15 @@ const smtpConfig = {
     },
 };
 
-// Specify the column indices (0-based indexing)
-const emailColumnIndex = 0; // Column containing email addresses
-const nameColumnIndex = 1;  // Column containing names
-
-// Initialize the AutoEmailSender with the Excel file, SMTP config, and column indices
-const emailSender = new AutoEmailSender('path/to/your/excel/file.xlsx', smtpConfig, emailColumnIndex, nameColumnIndex);
+// Initialize the AutoEmailSender with the Excel file, SMTP config, and column names
+const emailSender = new AutoEmailSender('path/to/your/excel/file.xlsx', smtpConfig, 'Email', 'Name');
 
 // Set the subject and path to the HTML template
 const subject = 'Your Email Subject';
 const templatePath = 'path/to/email_template.html';
 
-// Send an email for a specific row (0-based index)
-emailSender.sendEmailForRow(0, subject, templatePath);
+// Send emails for all rows in the specified columns
+emailSender.sendEmailsForColumn(subject, templatePath);
 ```
 
 ### Step 4: Run Your Script
@@ -125,20 +121,19 @@ node your_script.js
 
 ### API Documentation
 
-#### `AutoEmailSender(filePath, smtpConfig, emailColumnIndex, nameColumnIndex)`
+#### `AutoEmailSender(filePath, smtpConfig, emailColumnName, nameColumnName)`
 
 - **filePath**: Path to the Excel file containing recipient data.
 - **smtpConfig**: SMTP configuration object for `nodemailer`. Must include host, port, secure, and auth properties.
-- **emailColumnIndex**: 0-based index of the column containing email addresses.
-- **nameColumnIndex**: 0-based index of the column containing recipient names.
+- **emailColumnName**: The name of the column containing email addresses.
+- **nameColumnName**: The name of the column containing recipient names.
 
-#### `sendEmailForRow(rowIndex, subject, templatePath)`
+#### `sendEmailsForColumn(subject, templatePath)`
 
-- **rowIndex**: The 0-based index of the row in the Excel file to use for the email.
 - **subject**: Subject of the email.
 - **templatePath**: Path to the HTML template file.
 
-#### Example SMTP Configuration
+### Example SMTP Configuration
 
 ```javascript
 const smtpConfig = {
@@ -154,7 +149,7 @@ const smtpConfig = {
 
 ## License
 
-This project is licensed under the ICT License.
+This project is licensed under the ISC License.
 
 ## Author
 
@@ -164,9 +159,8 @@ Aniket Subudhi
 
 Contributions, issues, and feature requests are welcome! Feel free to check the [issues page](https://github.com/Aniket-Subudh1/auto-email-sender.git) if you want to contribute.
 
-## Acknowledgments
+## Acknowledgments 
 
 - [Nodemailer](https://nodemailer.com/) - The Node.js module used for sending emails.
 - [xlsx](https://github.com/SheetJS/sheetjs) - The library used to parse Excel files.
 - [fs-extra](https://github.com/jprichardson/node-fs-extra) - The library used for file system operations.
-```
